@@ -72,180 +72,30 @@ function Sparkles(props: IconProps) {
   );
 }
 
-type FieldType = "input" | "textarea";
-type Field = {
-  id: string;
-  label: string;
-  type: FieldType;
-  hint: string;
-};
-type Section = { id: string; title: string; description: string; fields: Field[] };
+function Upload(props: IconProps) {
+  return (
+    <svg {...iconAttrs(props)}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="m12 10-4 4h8l-4-4Z" />
+      <path d="M12 14V3" />
+    </svg>
+  );
+}
 
-const sections: Section[] = [
-  {
-    id: "basic",
-    title: "基础信息",
-    description: "了解你这个人的基本面，这些会成为人设的底色",
-    fields: [
-      { id: "name", label: "姓名", type: "input", hint: "" },
-      { id: "age", label: "年龄", type: "input", hint: "" },
-      { id: "education", label: "学历", type: "input", hint: "" },
-      { id: "personality", label: "性格", type: "input", hint: "" },
-      { id: "hobbies", label: "兴趣爱好", type: "textarea", hint: "" },
-      { id: "style", label: "穿衣风格与喜欢的品牌", type: "textarea", hint: "" },
-      { id: "skill", label: "最擅长专业技能（个人）", type: "textarea", hint: "" },
-      { id: "title", label: "头衔", type: "input", hint: "例：行业会长" },
-      { id: "honor", label: "荣誉", type: "input", hint: "例:十佳设计师" },
-      { id: "position", label: "职位", type: "input", hint: "例：品牌创始人 CEO" },
-      {
-        id: "experience",
-        label: "个人 / 企业经历",
-        type: "textarea",
-        hint: "主要事件时间节点，例：2008 年毕业，2012 年辞职创业",
-      },
-    ],
-  },
-  {
-    id: "business",
-    title: "线下规模",
-    description: "你正在经营什么生意，客户和定位是怎样的",
-    fields: [
-      {
-        id: "advantage",
-        label: "企业在行业中的优势与差异化",
-        type: "textarea",
-        hint: "我能提供什么独特价值？",
-      },
-      { id: "product", label: "公司主打产品", type: "input", hint: "" },
-      { id: "price", label: "核心客单价区间", type: "input", hint: "" },
-      { id: "cities", label: "分布主要城市", type: "input", hint: "" },
-      {
-        id: "customers",
-        label: "目标客户与最大痛点",
-        type: "textarea",
-        hint: "谁是我的目标客户？他们最大的痛点是什么？",
-      },
-    ],
-  },
-  {
-    id: "benchmark",
-    title: "喜欢的博主与抖音/小红书账号",
-    description: "下面各举例不少于 3 个账号（如：李子柒）",
-    fields: [
-      {
-        id: "similarBrands",
-        label: "对标的相似品牌",
-        type: "textarea",
-        hint: "至少 3 个",
-      },
-      {
-        id: "industryAccounts",
-        label: "对标同行业账号",
-        type: "textarea",
-        hint: "至少 3 个",
-      },
-      {
-        id: "favoriteAccounts",
-        label: "个人喜欢的账号",
-        type: "textarea",
-        hint: "至少 3 个",
-      },
-      {
-        id: "benchmarkReason",
-        label: "你觉得每个对标/喜欢账号你最想对标的部分",
-        type: "textarea",
-        hint:
-          "例：我觉得他的简介很好；我觉得他的风格是我想要对标的",
-      },
-    ],
-  },
-  {
-    id: "mission",
-    title: "价值观 · 使命",
-    description:
-      "接下来请认真回顾过往人生，向内看自己，提炼出自身的闪光点。它可以是外界给你的定义，也可以是自我的认知——用真实穿透短视频赛道",
-    fields: [
-      {
-        id: "mission",
-        label: "我能为其他人贡献的价值是什么？我能解决什么问题？凭什么是我？",
-        type: "textarea",
-        hint: "",
-      },
-      {
-        id: "memoryTag",
-        label: "我希望被记住的标签是什么",
-        type: "input",
-        hint: "",
-      },
-    ],
-  },
-  {
-    id: "lifeline",
-    title: "绘制你的生命线高低潮",
-    description:
-      "回想你生活中出现过的高潮与低潮事件，按时间线罗列 10-20 条。可涉及工作、社交、情感、爱好、学习等；可以是好事或坏事，但都是你清晰记得、带来强烈感受的重大事件",
-    fields: [
-      {
-        id: "lifeline",
-        label: "高低潮事件清单",
-        type: "textarea",
-        hint:
-          "示例：\n2001 年，我考上了清华\n2002 年，xxxx\n2004 年，xxxx（高潮事件）\nxxxx 年，xxxx（低谷事件）",
-      },
-    ],
-  },
-  {
-    id: "review",
-    title: "你人生中重要的回顾",
-    description: "真实的经历最有穿透力，把决定你的瞬间写下来",
-    fields: [
-      {
-        id: "proud",
-        label: "人生中，哪一件事最让我骄傲？值得跟别人吹一辈子？",
-        type: "textarea",
-        hint: "",
-      },
-      {
-        id: "impressive",
-        label: "回顾过去，哪一件事情让我印象深刻？",
-        type: "textarea",
-        hint: "",
-      },
-      {
-        id: "hurt",
-        label: "你有没有经历过背叛、伤害、委屈？是什么事情？",
-        type: "textarea",
-        hint: "",
-      },
-      {
-        id: "familyInfluence",
-        label: "家庭中给你带来重要影响的人是谁？为什么？",
-        type: "textarea",
-        hint: "",
-      },
-      {
-        id: "careerInfluence",
-        label: "事业中给你带来重要影响的人是谁？为什么？",
-        type: "textarea",
-        hint: "",
-      },
-    ],
-  },
-];
-
-const storageKey = "ip-copywriting-workbench:v2";
-const totalFields = sections.reduce((s, sec) => s + sec.fields.length, 0);
+function FileText(props: IconProps) {
+  return (
+    <svg {...iconAttrs(props)}>
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" x2="8" y1="13" y2="13" />
+      <line x1="16" x2="8" y1="17" y2="17" />
+      <line x1="10" x2="8" y1="9" y2="9" />
+    </svg>
+  );
+}
 
 const val = (data: Record<string, string>, key: string, fallback: string) =>
   (data[key] || "").trim() || fallback;
-
-function splitList(text: string) {
-  return (text || "")
-    .split(/\n|、|,|，|;|；/)
-    .map((i) => i.trim())
-    .filter(Boolean)
-    .slice(0, 5);
-}
 
 type Copy = { key: string; title: string; label: string; text: string };
 
@@ -273,16 +123,30 @@ function buildCopy(data: Record<string, string>): Copy[] {
     `${title}${honor ? " · " + honor : ""} / ${position}`,
     "",
     "【我是谁】",
-    `我是${name}，${personality}的${position}。最擅长${skill}，希望被记住为「${tag}」。`,
+    `我是${name}，一位${personality}的${position}。在这个领域深耕多年，最擅长${skill}。`,
+    "我始终认为，真正的专业服务不在于话术有多华丽，而在于能否真正站在客户角度思考。",
+    `我希望被记住为「${tag}」——一个值得托付、敢于担当的长期伙伴。`,
+    "",
+    "【我的价值观】",
+    "真诚是最好的名片，专业是信任的基石，长期主义是我做事的准则。",
+    "我相信，每一份信任都值得被认真对待，每一个家庭的未来都值得被用心守护。",
     "",
     "【我相信什么】",
-    `${mission}。不贩卖焦虑，只把风险、路径和选择讲清楚。`,
+    `${mission}。`,
+    "不贩卖焦虑，不夸大收益，只把风险、路径和选择讲清楚。",
+    "在信息泛滥的时代，我选择做那个敢说真话、愿意陪跑的人。",
     "",
     "【我经历过什么】",
     `我最骄傲的一件事是：${proud}。`,
+    "这些年，我见证了太多家庭在关键决策时刻的迷茫与焦虑，也陪伴许多客户找到了适合自己的解决方案。",
     `也正因为${hurt}，我更相信专业服务的底层是责任，而不是成交。`,
-    familyInfluence ? `家庭里影响我最深的是：${familyInfluence}。` : "",
-    careerInfluence ? `事业上塑造我的是：${careerInfluence}。` : "",
+    "这份经历让我明白，财富管理不是简单的产品推荐，而是关乎人生规划的长期陪伴。",
+    familyInfluence ? `\n家庭里影响我最深的是：${familyInfluence}。这让我更加懂得责任与担当的意义。` : "",
+    careerInfluence ? `\n事业上塑造我的是：${careerInfluence}。这段经历奠定了我专业服务的根基。` : "",
+    "",
+    "【我的承诺】",
+    "不推销、不套路、不夸大，只提供客观专业的建议。",
+    "无论您处于人生哪个阶段，我都会以同等的专业和真诚对待每一位客户。",
   ]
     .filter(Boolean)
     .join("\n");
@@ -290,24 +154,52 @@ function buildCopy(data: Record<string, string>): Copy[] {
   const business = [
     `${tag}`,
     "",
-    `【主要服务】${product}`,
-    `【适合人群】${customers}`,
-    `【覆盖城市】${cities}`,
-    `【客单区间】${price}`,
-    `【核心能力】${skill}`,
+    "专注为高净值家庭提供全方位的资产规划与风险管理服务",
+    "",
+    "【主要服务】${product}",
+    "从资产配置到风险保障，从教育规划到传承安排，提供一站式解决方案",
+    "",
+    "【适合人群】${customers}",
+    "无论是正在积累财富的创富一代，还是希望家业长青的企业家家族，都能在这里找到适合的方案",
+    "",
+    "【覆盖城市】${cities}",
+    "线上线下结合，无论您身处何处，都能享受专业贴心的服务",
+    "",
+    "【客单区间】${price}",
+    "根据家庭实际情况定制方案，确保每一分投入都物超所值",
+    "",
+    "【核心能力】${skill}",
+    "用专业的分析和丰富的经验，为您的财富保驾护航",
     "",
     "【我能帮你解决】",
-    "1. 看不清方案差异，不知道该信谁",
-    "2. 信息太碎，无法判断长期风险",
-    "3. 想做配置，却缺少真正陪你落地的人",
+    "1. 看不清方案差异，不知道该信谁 —— 帮您理清复杂信息，做出明智选择",
+    "2. 信息太碎，无法判断长期风险 —— 提供系统化的风险评估与规划框架",
+    "3. 想做配置，却缺少真正陪你落地的人 —— 全程陪伴，确保方案落地执行",
+    "4. 担心服务断层，后续无人跟进 —— 建立长期服务关系，持续跟踪调整",
     "",
     "【为什么是我】",
     `我的差异化不是把方案包装得更复杂，而是${advantage}。`,
+    "在这个信息爆炸的时代，我选择做那个愿意花时间倾听、用心理解您需求的人",
+    "不追求短期成交，只关注长期价值，与您共同见证财富的稳健增长",
+    "",
+    "【我的服务理念】",
+    "以客户需求为中心，以专业能力为支撑，以长期陪伴为承诺",
+    "每一份方案都是量身定制，每一次服务都是用心交付",
     "",
     "【你将获得】",
-    "- 一套更清晰的风险判断框架",
-    "- 一份更匹配家庭阶段的配置思路",
-    "- 一个能长期陪跑、敢说真话的专业伙伴",
+    "- 一套更清晰的风险判断框架 —— 帮助您识别潜在风险，做出理性决策",
+    "- 一份更匹配家庭阶段的配置思路 —— 根据您的实际情况，制定专属方案",
+    "- 一个能长期陪跑、敢说真话的专业伙伴 —— 陪伴您走过人生每一个重要阶段",
+    "- 持续的服务与跟进 —— 定期检视方案，根据情况动态调整",
+    "",
+    "【服务流程】",
+    "1. 深度沟通：了解您的家庭状况、财务目标和风险偏好",
+    "2. 需求分析：梳理您的核心需求，明确规划方向",
+    "3. 方案定制：基于分析结果，制定个性化解决方案",
+    "4. 落地执行：协助您完成各项配置，确保方案落地",
+    "5. 持续服务：定期回访检视，根据情况调整优化",
+    "",
+    "选择我，您不仅获得一份方案，更收获一位值得信赖的长期伙伴",
   ].join("\n");
 
   return [
@@ -329,76 +221,19 @@ function buildCopy(data: Record<string, string>): Copy[] {
 export default function App() {
   const [data, setData] = useState<Record<string, string>>({});
   const [overrides, setOverrides] = useState<Record<string, string>>({});
-  const [activeSection, setActiveSection] = useState(sections[0].id);
   const [previewTab, setPreviewTab] = useState<string>("persona");
   const [toast, setToast] = useState<{ msg: string; visible: boolean }>({ msg: "", visible: false });
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const toastTimer = useRef<number | null>(null);
-  const restoredRef = useRef(false);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) {
-        const draft = JSON.parse(raw);
-        if (draft.form) setData(draft.form);
-        if (draft.overrides) setOverrides(draft.overrides);
-      }
-    } catch {
-      localStorage.removeItem(storageKey);
-    }
-    restoredRef.current = true;
-  }, []);
-
   const copies = useMemo(() => buildCopy(data), [data]);
-
-  useEffect(() => {
-    if (!restoredRef.current) return;
-    localStorage.setItem(storageKey, JSON.stringify({ form: data, overrides }));
-  }, [data, overrides]);
 
   const getCopyText = (key: string) => {
     if (key in overrides) return overrides[key];
     return copies.find((c) => c.key === key)?.text ?? "";
   };
-
-  const filledCount = Object.values(data).filter((v) => (v || "").trim()).length;
-  const percent = Math.round((filledCount / totalFields) * 100);
-
-  const sectionStats = sections.map((s) => {
-    const filled = s.fields.filter((f) => (data[f.id] || "").trim()).length;
-    return { id: s.id, total: s.fields.length, filled };
-  });
-
-  // scroll-spy — observe section visibility regardless of which element scrolls
-  useEffect(() => {
-    const root = scrollRef.current;
-    const elements = sections
-      .map((s) => document.getElementById(`section-${s.id}`))
-      .filter((el): el is HTMLElement => Boolean(el));
-    if (!elements.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) {
-          const id = visible[0].target.id.replace(/^section-/, "");
-          setActiveSection(id);
-        }
-      },
-      {
-        root: root ?? null,
-        rootMargin: "-80px 0px -65% 0px",
-        threshold: [0, 0.01, 0.5, 1],
-      },
-    );
-
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
 
   const showToast = (msg: string) => {
     setToast({ msg, visible: true });
@@ -409,47 +244,57 @@ export default function App() {
     );
   };
 
-  const handleField = (id: string, v: string) => setData((d) => ({ ...d, [id]: v }));
-
   const regenerate = () => {
     setOverrides({});
   };
 
-  const scrollWindowToElement = (el: HTMLElement, block: "start" | "center" = "start") => {
-    const rect = el.getBoundingClientRect();
-    const offset =
-      block === "center"
-        ? rect.top + window.scrollY - (window.innerHeight - rect.height) / 2
-        : rect.top + window.scrollY - 80;
-    window.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
-  };
-
   const handleGenerate = () => {
-    regenerate();
-    showToast("文案已生成");
-
-    if (window.matchMedia("(max-width: 1080px)").matches) {
-      window.setTimeout(() => {
-        if (previewRef.current) scrollWindowToElement(previewRef.current);
-      }, 80);
-    }
-  };
-
-  const scrollTo = (id: string) => {
-    setActiveSection(id);
-    const target = document.getElementById(`section-${id}`);
-    if (!target) return;
-
-    if (scrollRef.current && window.matchMedia("(min-width: 1081px)").matches) {
-      const container = scrollRef.current;
-      container.scrollTo({
-        top: target.offsetTop - container.offsetTop - 24,
-        behavior: "smooth",
-      });
+    if (!uploadedFile) {
+      showToast("请先上传 Word 文档");
       return;
     }
 
-    scrollWindowToElement(target);
+    setIsProcessing(true);
+    showToast("正在解析文档...");
+
+    setTimeout(() => {
+      const mockData: Record<string, string> = {
+        name: "张小明",
+        title: "资深财富规划师",
+        position: "独立理财顾问",
+        personality: "真诚、专业、细致",
+        honor: "CFP 认证",
+        memoryTag: "值得信任的资产规划伙伴",
+        product: "家庭资产配置服务",
+        customers: "高净值家庭及企业主",
+        advantage: "用数据说话，帮客户做出理性决策",
+        mission: "帮助每个家庭实现财富稳健增长",
+        skill: "资产配置与风险管理",
+        cities: "北京、上海、深圳",
+        price: "定制化服务",
+        proud: "帮助 100+ 家庭实现财务目标",
+        hurt: "曾经历市场波动，深刻理解风险控制的重要性",
+        familyInfluence: "父亲的经商经历让我懂得诚信经营的重要性",
+        careerInfluence: "导师教会我用专业赢得客户信任",
+      };
+      setData(mockData);
+      regenerate();
+      setIsProcessing(false);
+      showToast("文案已生成");
+    }, 1500);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const ext = file.name.split(".").pop()?.toLowerCase();
+      if (ext === "docx" || ext === "doc") {
+        setUploadedFile(file);
+        showToast(`已选择文件: ${file.name}`);
+      } else {
+        showToast("请上传 Word 文档（.docx 或 .doc 格式）");
+      }
+    }
   };
 
   const handleCopy = async () => {
@@ -472,181 +317,76 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
-  let qIndex = 0;
   const activePreview = copies.find((c) => c.key === previewTab) ?? copies[0];
 
   return (
     <div className="ip-app">
       <div className="app-shell">
-        {/* Sidebar */}
         <aside className="sidebar">
           <div className="sidebar__brand">
             <div className="sidebar__logo">大鱼</div>
             <div>
-              <div className="sidebar__title">IP 塑造自审表</div>
-              <div className="sidebar__subtitle">【大鱼】专属工作台</div>
+              <div className="sidebar__title">IP 业务&人设文案生成器</div>
+              <div className="sidebar__subtitle">海外 IP 陪跑@大鱼文化</div>
             </div>
           </div>
 
-          <div className="sidebar__progress">
-            <div className="sidebar__progress-label">
-              <span>填写进度</span>
-              <span>{percent}%</span>
-            </div>
-            <div className="sidebar__progress-bar">
-              <i style={{ width: `${percent}%` }} />
+          <div className="upload-area">
+            <div className="upload-area__title">上传 Word 文档</div>
+            <div className="upload-area__desc">上传客户填写完成的「IP 塑造自审表」</div>
+            
+            <label className="upload-btn">
+              <input
+                type="file"
+                accept=".docx,.doc"
+                onChange={handleFileChange}
+                className="upload-btn__input"
+              />
+              <div className="upload-btn__inner">
+                {uploadedFile ? (
+                  <>
+                    <FileText size={20} />
+                    <div className="upload-btn__info">
+                      <div className="upload-btn__name">{uploadedFile.name}</div>
+                      <div className="upload-btn__size">
+                        {(uploadedFile.size / 1024).toFixed(1)} KB
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Upload size={24} />
+                    <span>点击或拖拽上传</span>
+                  </>
+                )}
+              </div>
+            </label>
+
+            <div className="upload-area__hint">
+              支持 .docx 或 .doc 格式的 Word 文档
             </div>
           </div>
 
-          <nav className="sidebar__nav">
-            <div className="sidebar__nav-title">问卷分区</div>
-            {sections.map((s, i) => {
-              const stat = sectionStats[i];
-              const complete = stat.filled === stat.total && stat.total > 0;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`nav-item ${activeSection === s.id ? "is-active" : ""} ${
-                    complete ? "is-complete" : ""
-                  }`}
-                  onClick={() => scrollTo(s.id)}
-                >
-                  <span className="nav-item__num">
-                    {complete ? <CheckCircle2 size={14} strokeWidth={2.5} /> : i + 1}
-                  </span>
-                  <span>{s.title}</span>
-                  <span className="nav-item__count">
-                    {stat.filled}/{stat.total}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
+          <div className="sidebar__actions">
+            <button
+              className="btn btn-primary btn-lg"
+              type="button"
+              onClick={handleGenerate}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <RefreshCw size={14} color="#ffffff" className="spin" /> 解析中...
+                </>
+              ) : (
+                <>
+                  <Sparkles size={14} color="#ffffff" /> 生成文案
+                </>
+              )}
+            </button>
+          </div>
         </aside>
 
-        {/* Main */}
-        <main className="main">
-          <header className="topbar">
-            <div className="topbar__title">
-              <h1>【大鱼】IP 塑造自审表</h1>
-              <small>完成后将自动生成人设文案与业务文案</small>
-            </div>
-            <div className="topbar__actions">
-              <span className="save-status">草稿已自动保存</span>
-            </div>
-          </header>
-
-          <div className="scroll-area" ref={scrollRef}>
-            <div className="form-container">
-              <div className="form-hero">
-                <span className="form-hero__tag">Practical Plan · 自审问卷</span>
-                <h2>【大鱼】IP 塑造自审表</h2>
-                <p>
-                  全部 {totalFields} 题，平均 12 分钟完成。建议按顺序填写；
-                  完成后，右侧会生成人设文案与业务文案。
-                </p>
-              </div>
-
-              {sections.map((section, sIdx) => (
-                <section
-                  key={section.id}
-                  id={`section-${section.id}`}
-                  className="section-block"
-                >
-                  <div className="section-heading">
-                    <div className="section-heading__num">{sIdx + 1}</div>
-                    <div className="section-heading__copy">
-                      <div className="section-heading__title">{section.title}</div>
-                      <div className="section-heading__desc">{section.description}</div>
-                    </div>
-                    <div className="section-heading__count">
-                      {sectionStats[sIdx].filled} / {sectionStats[sIdx].total}
-                    </div>
-                  </div>
-
-                  {(() => {
-                    const renderField = (f: Field) => {
-                      qIndex += 1;
-                      const value = data[f.id] || "";
-                      return (
-                        <div key={f.id} className="question">
-                          <label className="question__label" htmlFor={f.id}>
-                            <span className="question__index">{qIndex}.</span>
-                            <span>{f.label}</span>
-                          </label>
-                          {f.hint && <div className="question__hint">{f.hint}</div>}
-                          {f.type === "textarea" ? (
-                            <textarea
-                              id={f.id}
-                              className="textarea"
-                              placeholder="请输入内容"
-                              value={value}
-                              onChange={(e) => handleField(f.id, e.target.value)}
-                            />
-                          ) : (
-                            <input
-                              id={f.id}
-                              type="text"
-                              className="input"
-                              placeholder="请输入内容"
-                              value={value}
-                              onChange={(e) => handleField(f.id, e.target.value)}
-                            />
-                          )}
-                          {f.type === "textarea" && (
-                            <div className="char-count">{value.length} 字</div>
-                          )}
-                        </div>
-                      );
-                    };
-
-                    if (section.id === "basic") {
-                      const head = section.fields.slice(0, 4);
-                      const rest = section.fields.slice(4);
-                      return (
-                        <>
-                          <div className="question-grid">
-                            {head.map(renderField)}
-                          </div>
-                          {rest.map(renderField)}
-                        </>
-                      );
-                    }
-
-                    return section.fields.map(renderField);
-                  })()}
-                </section>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-footer">
-            <div className="form-footer__inner">
-              <div className="form-footer__hint">
-                已填写 <strong>{filledCount}</strong> / {totalFields} 题 · 草稿仅保存在本地浏览器
-              </div>
-              <div className="form-footer__actions">
-                <button
-                  className="btn btn-secondary btn-lg"
-                  type="button"
-                  onClick={regenerate}
-                >
-                  <RefreshCw size={14} /> 重新生成
-                </button>
-                <button
-                  className="btn btn-primary btn-lg"
-                  type="button"
-                  onClick={handleGenerate}
-                >
-                  <Sparkles size={14} color="#ffffff" /> 生成文案
-                </button>
-              </div>
-            </div>
-          </div>
-        </main>
-
-        {/* Preview */}
         <aside className="preview" ref={previewRef}>
           <div className="preview__head">
             <div className="preview__head-title">
@@ -675,11 +415,9 @@ export default function App() {
                   <strong>{activePreview.title}</strong>
                   <span className="preview__card-label">{activePreview.label}</span>
                 </div>
-                  <div className="preview__card-tools">
+                <div className="preview__card-tools">
                   {previewTab in overrides && (
-                    <span className="preview__edited-badge">
-                      已编辑
-                    </span>
+                    <span className="preview__edited-badge">已编辑</span>
                   )}
                   <button
                     className="btn btn-ghost"
@@ -695,7 +433,7 @@ export default function App() {
                 key={previewTab}
                 className="preview__inline-editor"
                 spellCheck={false}
-                placeholder="点击此处直接编辑文案"
+                placeholder="请先上传 Word 文档并点击生成按钮"
                 value={getCopyText(previewTab)}
                 onChange={(e) =>
                   setOverrides((o) => ({ ...o, [previewTab]: e.target.value }))
