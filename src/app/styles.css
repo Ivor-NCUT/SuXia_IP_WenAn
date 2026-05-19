@@ -301,12 +301,12 @@ body,
 }
 
 .ip-app .btn-ghost {
-  color: #d5d0c7;
+  color: var(--color-body);
 }
 
 .ip-app .btn-ghost:hover {
-  background: var(--color-surface-dark-elevated);
-  color: var(--color-on-dark);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .ip-app .btn-icon {
@@ -314,14 +314,14 @@ body,
   height: 36px;
   padding: 0;
   border-radius: var(--radius-pill);
-  color: var(--color-on-dark);
-  background: var(--color-surface-dark-elevated);
-  border-color: rgba(250, 249, 245, 0.08);
+  color: var(--color-body);
+  background: var(--color-canvas);
+  border-color: var(--color-hairline);
 }
 
 .ip-app .btn-icon:hover {
-  background: #302d29;
-  color: var(--color-on-dark);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .btn-lg {
@@ -341,10 +341,10 @@ body,
 
 /* ---------- Preview panel ---------- */
 .preview {
-  background: var(--color-surface-dark);
+  background: rgba(250, 249, 245, 0.86);
   border-radius: var(--radius-xl);
-  border: 1px solid rgba(250, 249, 245, 0.08);
-  box-shadow: var(--shadow-pop);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-subtle);
   position: sticky;
   top: 16px;
   height: calc(100vh - 32px);
@@ -355,8 +355,8 @@ body,
 
 .preview::before {
   content: "";
-  height: 9px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-accent-amber));
+  height: 0;
+  background: transparent;
   flex-shrink: 0;
 }
 
@@ -366,7 +366,7 @@ body,
   justify-content: space-between;
   min-height: 76px;
   padding: 0 24px;
-  border-bottom: 1px solid rgba(250, 249, 245, 0.08);
+  border-bottom: 1px solid var(--color-hairline-soft);
   flex-shrink: 0;
 }
 
@@ -381,13 +381,13 @@ body,
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.1;
-  color: var(--color-on-dark);
+  color: var(--color-ink);
 }
 
 .preview__head-title span {
   font-size: 13px;
   line-height: 20px;
-  color: var(--color-on-dark-soft);
+  color: var(--color-muted);
   margin-top: 4px;
 }
 
@@ -395,7 +395,7 @@ body,
   display: flex;
   gap: 8px;
   padding: 14px 20px;
-  border-bottom: 1px solid rgba(250, 249, 245, 0.08);
+  border-bottom: 1px solid var(--color-hairline-soft);
   overflow-x: auto;
 }
 
@@ -407,19 +407,19 @@ body,
   border-radius: var(--radius-md);
   font-size: 13px;
   line-height: 18px;
-  color: #b8b3aa;
+  color: var(--color-muted);
   font-weight: 500;
   transition: background 120ms ease, color 120ms ease;
 }
 
 .ip-app .preview__tab:hover {
-  background: var(--color-surface-dark-elevated);
-  color: var(--color-on-dark);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .ip-app .preview__tab.is-active {
-  background: var(--color-surface-dark-elevated);
-  color: var(--color-on-dark);
+  background: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .preview__body {
@@ -434,8 +434,8 @@ body,
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background: var(--color-surface-dark-soft);
-  border: 1px solid rgba(250, 249, 245, 0.09);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
   padding: 24px;
   box-shadow: none;
@@ -459,8 +459,8 @@ body,
 .preview__edited-badge {
   padding: 4px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(93, 184, 166, 0.15);
-  color: #91d8ca;
+  background: rgba(93, 184, 166, 0.16);
+  color: #2f806f;
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
@@ -470,13 +470,13 @@ body,
   font-size: 16px;
   line-height: 22px;
   font-weight: 500;
-  color: var(--color-on-dark);
+  color: var(--color-ink);
 }
 
 .preview__card-meta span {
   font-size: 13px;
   line-height: 18px;
-  color: #b8b3aa;
+  color: var(--color-muted);
 }
 
 .preview__card-label {
@@ -489,20 +489,20 @@ body,
   width: 100%;
   margin: 0;
   padding: 18px 20px;
-  border: 1px solid rgba(250, 249, 245, 0.08);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
-  background: var(--color-surface-dark);
+  background: rgba(250, 249, 245, 0.78);
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 24px;
-  color: var(--color-on-dark);
+  color: var(--color-body-strong);
   outline: 0;
   resize: none;
   transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
 .preview__inline-editor:hover {
-  border-color: rgba(250, 249, 245, 0.14);
+  border-color: #d9cfc3;
 }
 
 .preview__inline-editor:focus {
@@ -511,7 +511,7 @@ body,
 }
 
 .preview__inline-editor::placeholder {
-  color: #77736a;
+  color: var(--color-muted-soft);
 }
 
 .preview__card-actions {

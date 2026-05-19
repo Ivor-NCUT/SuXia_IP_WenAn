@@ -407,7 +407,7 @@ export default function App() {
 
           <div className="upload-area">
             <div className="upload-area__title">上传 Word 文档</div>
-            <div className="upload-area__desc">上传客户填写完成的「IP 塑造自审表」</div>
+            <div className="upload-area__desc">上传填写完成的「IP 塑造自审表」</div>
             
             <label className="upload-btn">
               <input
