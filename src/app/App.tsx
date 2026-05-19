@@ -99,6 +99,31 @@ const val = (data: Record<string, string>, key: string, fallback: string) =>
 
 type Copy = { key: string; title: string; label: string; text: string };
 
+function parseGeneratedSections(text: string) {
+  const personaMarker = "【人设文案】";
+  const businessMarker = "【业务文案】";
+  const personaStart = text.indexOf(personaMarker);
+  const businessStart = text.indexOf(businessMarker);
+
+  if (personaStart === -1 && businessStart === -1) {
+    return { persona: text, business: "" };
+  }
+
+  const persona =
+    personaStart === -1
+      ? ""
+      : text
+          .slice(
+            personaStart + personaMarker.length,
+            businessStart === -1 ? text.length : businessStart,
+          )
+          .trimStart();
+  const business =
+    businessStart === -1 ? "" : text.slice(businessStart + businessMarker.length).trimStart();
+
+  return { persona, business };
+}
+
 function buildCopy(data: Record<string, string>): Copy[] {
   const name = val(data, "name", "你");
   const title = val(data, "title", "专业顾问");
@@ -248,51 +273,100 @@ export default function App() {
     setOverrides({});
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!uploadedFile) {
       showToast("请先上传 Word 文档");
       return;
     }
 
     setIsProcessing(true);
+    setPreviewTab("persona");
+    setOverrides({ persona: "", business: "" });
     showToast("正在解析文档...");
 
-    setTimeout(() => {
-      const mockData: Record<string, string> = {
-        name: "张小明",
-        title: "资深财富规划师",
-        position: "独立理财顾问",
-        personality: "真诚、专业、细致",
-        honor: "CFP 认证",
-        memoryTag: "值得信任的资产规划伙伴",
-        product: "家庭资产配置服务",
-        customers: "高净值家庭及企业主",
-        advantage: "用数据说话，帮客户做出理性决策",
-        mission: "帮助每个家庭实现财富稳健增长",
-        skill: "资产配置与风险管理",
-        cities: "北京、上海、深圳",
-        price: "定制化服务",
-        proud: "帮助 100+ 家庭实现财务目标",
-        hurt: "曾经历市场波动，深刻理解风险控制的重要性",
-        familyInfluence: "父亲的经商经历让我懂得诚信经营的重要性",
-        careerInfluence: "导师教会我用专业赢得客户信任",
-      };
-      setData(mockData);
-      regenerate();
+    try {
+      const formData = new FormData();
+      formData.append("file", uploadedFile);
+
+      const response = await fetch("/api/upload/stream", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok || !response.body) {
+        const result = await response.json().catch(() => null);
+        showToast(result?.detail || "生成失败");
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+      let generatedText = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+          const event = JSON.parse(line);
+
+          if (event.type === "status") {
+            showToast(event.message);
+          }
+
+          if (event.type === "delta") {
+            generatedText += event.content || "";
+            const parsed = parseGeneratedSections(generatedText);
+            setOverrides(parsed);
+          }
+
+          if (event.type === "done") {
+            const personaText = event.data?.persona || "";
+            const businessText = event.data?.business || "";
+
+            if (personaText || businessText) {
+              setData({
+                name: uploadedFile.name.replace(/\.docx$/i, ""),
+              });
+              setOverrides({
+                persona: personaText,
+                business: businessText,
+              });
+              showToast(event.message || "文案已生成");
+            } else {
+              showToast("生成的文案内容为空");
+            }
+          }
+
+          if (event.type === "error") {
+            showToast(event.message || "生成失败");
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showToast("网络错误，请稍后重试");
+    } finally {
       setIsProcessing(false);
-      showToast("文案已生成");
-    }, 1500);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const ext = file.name.split(".").pop()?.toLowerCase();
-      if (ext === "docx" || ext === "doc") {
+      if (ext === "docx") {
         setUploadedFile(file);
         showToast(`已选择文件: ${file.name}`);
       } else {
-        showToast("请上传 Word 文档（.docx 或 .doc 格式）");
+        showToast("请上传 .docx 格式的 Word 文档");
       }
     }
   };
@@ -338,7 +412,7 @@ export default function App() {
             <label className="upload-btn">
               <input
                 type="file"
-                accept=".docx,.doc"
+                accept=".docx"
                 onChange={handleFileChange}
                 className="upload-btn__input"
               />
@@ -363,13 +437,11 @@ export default function App() {
             </label>
 
             <div className="upload-area__hint">
-              支持 .docx 或 .doc 格式的 Word 文档
+              支持 .docx 格式的 Word 文档
             </div>
-          </div>
 
-          <div className="sidebar__actions">
             <button
-              className="btn btn-primary btn-lg"
+              className="btn btn-primary btn-lg upload-area__generate-btn"
               type="button"
               onClick={handleGenerate}
               disabled={isProcessing}
