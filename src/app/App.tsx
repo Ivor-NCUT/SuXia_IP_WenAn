@@ -74,6 +74,15 @@ function Sparkles(props: IconProps) {
   );
 }
 
+function Edit3(props: IconProps) {
+  return (
+    <svg {...iconAttrs(props)}>
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  );
+}
+
 function Upload(props: IconProps) {
   return (
     <svg {...iconAttrs(props)}>
@@ -259,7 +268,7 @@ export default function App() {
 
   const getCopyText = (key: string) => {
     if (key in overrides) return overrides[key];
-    return copies.find((c) => c.key === key)?.text ?? "";
+    return "";
   };
 
   const showToast = (msg: string) => {
@@ -390,6 +399,9 @@ export default function App() {
   };
 
   const activePreview = copies.find((c) => c.key === previewTab) ?? copies[0];
+  const activeCopyText = getCopyText(previewTab);
+  const hasActiveCopy = activeCopyText.trim().length > 0;
+  const showEmptyState = !hasActiveCopy && !isProcessing;
 
   return (
     <div className="ip-app">
@@ -463,6 +475,10 @@ export default function App() {
               <strong>生成文案</strong>
               <span>切换查看不同版本</span>
             </div>
+            <div className="preview__edit-note">
+              <Edit3 size={14} />
+              <span>生成后可直接编辑</span>
+            </div>
           </div>
 
           <div className="preview__tabs">
@@ -486,7 +502,7 @@ export default function App() {
                   <span className="preview__card-label">{activePreview.label}</span>
                 </div>
                 <div className="preview__card-tools">
-                  {previewTab in overrides && (
+                  {previewTab in overrides && hasActiveCopy && (
                     <span className="preview__edited-badge">已编辑</span>
                   )}
                   <button
@@ -494,6 +510,7 @@ export default function App() {
                     type="button"
                     onClick={handleCopy}
                     title="复制"
+                    disabled={!hasActiveCopy}
                   >
                     <Copy size={13} /> 复制
                   </button>
@@ -502,21 +519,35 @@ export default function App() {
                     type="button"
                     onClick={handleDownload}
                     title="导出当前文案"
+                    disabled={!hasActiveCopy}
                   >
                     <Download size={13} /> 导出
                   </button>
                 </div>
               </div>
-              <textarea
-                key={previewTab}
-                className="preview__inline-editor"
-                spellCheck={false}
-                placeholder="请先上传 Word 文档并点击生成按钮"
-                value={getCopyText(previewTab)}
-                onChange={(e) =>
-                  setOverrides((o) => ({ ...o, [previewTab]: e.target.value }))
-                }
-              />
+              {showEmptyState ? (
+                <div className="preview__empty-state" aria-live="polite">
+                  <div className="preview__empty-icon">
+                    <Upload size={24} />
+                  </div>
+                  <strong>请先在左侧上传 Word 文档</strong>
+                  <span>
+                    上传填写完成的「IP 塑造自审表」后，点击「生成文案」，
+                    这里会显示可复制、可导出、可编辑的{activePreview.title}。
+                  </span>
+                </div>
+              ) : (
+                <textarea
+                  key={previewTab}
+                  className="preview__inline-editor"
+                  spellCheck={false}
+                  placeholder="正在等待生成内容..."
+                  value={activeCopyText}
+                  onChange={(e) =>
+                    setOverrides((o) => ({ ...o, [previewTab]: e.target.value }))
+                  }
+                />
+              )}
             </div>
           </div>
         </aside>

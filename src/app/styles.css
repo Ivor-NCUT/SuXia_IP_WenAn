@@ -364,6 +364,7 @@ body,
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   min-height: 76px;
   padding: 0 24px;
   border-bottom: 1px solid var(--color-hairline-soft);
@@ -389,6 +390,23 @@ body,
   line-height: 20px;
   color: var(--color-muted);
   margin-top: 4px;
+}
+
+.preview__edit-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background: rgba(250, 249, 245, 0.72);
+  color: var(--color-body);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .preview__tabs {
@@ -481,6 +499,46 @@ body,
 
 .preview__card-label {
   margin-left: 10px;
+}
+
+.preview__empty-state {
+  flex: 1;
+  min-height: 360px;
+  width: 100%;
+  padding: 40px 24px;
+  border: 1px dashed #d9cfc3;
+  border-radius: var(--radius-md);
+  background: rgba(250, 249, 245, 0.56);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.preview__empty-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-soft);
+  color: var(--color-primary);
+}
+
+.preview__empty-state strong {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.preview__empty-state span {
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .preview__inline-editor {
@@ -612,6 +670,24 @@ body,
   .preview__card-meta {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .preview__head {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .preview__edit-note {
+    min-height: 30px;
+    font-size: 12px;
+  }
+
+  .preview__empty-state {
+    min-height: 300px;
+    padding: 32px 18px;
   }
 
   .preview__inline-editor {
