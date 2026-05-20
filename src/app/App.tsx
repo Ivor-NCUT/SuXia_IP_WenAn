@@ -269,10 +269,6 @@ export default function App() {
     );
   };
 
-  const regenerate = () => {
-    setOverrides({});
-  };
-
   const handleGenerate = async () => {
     if (!uploadedFile) {
       showToast("请先上传 Word 文档");
@@ -494,6 +490,14 @@ export default function App() {
                   <button
                     className="btn btn-ghost"
                     type="button"
+                    onClick={handleCopy}
+                    title="复制"
+                  >
+                    <Copy size={13} /> 复制
+                  </button>
+                  <button
+                    className="btn btn-ghost"
+                    type="button"
                     onClick={handleDownload}
                     title="导出当前文案"
                   >
@@ -511,24 +515,6 @@ export default function App() {
                   setOverrides((o) => ({ ...o, [previewTab]: e.target.value }))
                 }
               />
-              <div className="preview__card-actions">
-                <button
-                  className="btn btn-icon"
-                  type="button"
-                  title="重新生成"
-                  onClick={regenerate}
-                >
-                  <RefreshCw size={14} />
-                </button>
-                <button
-                  className="btn btn-icon"
-                  type="button"
-                  title="复制"
-                  onClick={handleCopy}
-                >
-                  <Copy size={14} />
-                </button>
-              </div>
             </div>
           </div>
         </aside>
