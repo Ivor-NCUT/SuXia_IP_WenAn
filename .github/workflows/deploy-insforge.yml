@@ -12,6 +12,7 @@ jobs:
 
     env:
       INSFORGE_ACCESS_TOKEN: ${{ secrets.INSFORGE_ACCESS_TOKEN }}
+      INSFORGE_API_KEY: ${{ secrets.INSFORGE_API_KEY }}
       INSFORGE_PROJECT_ID: ${{ secrets.INSFORGE_PROJECT_ID }}
 
     steps:
@@ -36,14 +37,14 @@ jobs:
           cat > ~/.insforge/credentials.json <<JSON
           {"access_token":"${INSFORGE_ACCESS_TOKEN}","refresh_token":"","user":{}}
           JSON
-          cat > .insforge/project.json <<'JSON'
+          cat > .insforge/project.json <<JSON
           {
             "project_id": "888fdeeb-8165-4701-894d-1d9e8959187a",
             "project_name": "苏夏的数据库",
             "org_id": "d3f5ba10-b2a3-430a-94af-9bbd675f2943",
             "appkey": "kgsfbz4g",
             "region": "ap-southeast",
-            "api_key": "",
+            "api_key": "${INSFORGE_API_KEY}",
             "oss_host": "https://kgsfbz4g.ap-southeast.insforge.app"
           }
           JSON
