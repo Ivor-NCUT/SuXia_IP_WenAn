@@ -50,6 +50,10 @@ FIELD_ALIASES = {
     "最擅长专业技能（个人）": "skill",
 }
 
+SECTION_HEADING_RE = re.compile(
+    r"^(?:【[^】]+】|[一二三四五六七八九十]+[、.．].+|\(?\d+\)?[、.．]\s*$)"
+)
+
 def docx_to_markdown(file_path: str) -> str:
     """
     将 DOCX 文件转换为 Markdown 文本，供 LLM 理解和抽取。
@@ -168,6 +172,7 @@ def _table_to_markdown(table) -> str:
 
 def _clean_field_value(value: str) -> str:
     value = _strip_markdown_inline(value)
+    value = re.sub(r"^[\(（][^\)）]*例[^\)）]*[\)）][：:]?\s*", "", value)
     value = re.sub(r"^例[：:]?\s*[\(（][^\)）]*[\)）][：:]?\s*", "", value)
     value = re.sub(r"^例[：:]?\s*", "", value)
     return value.strip()
@@ -197,6 +202,27 @@ def _parse_markdown_table_row(line: str) -> Dict[str, str]:
 def _strip_markdown_inline(text: str) -> str:
     return re.sub(r"^[*_`~\s]+|[*_`~\s]+$", "", text).strip()
 
+def _is_section_heading(text: str) -> bool:
+    normalized = _strip_markdown_inline(text).strip()
+    if not normalized:
+        return False
+
+    return bool(
+        normalized.startswith("#")
+        or SECTION_HEADING_RE.match(normalized)
+        or re.fullmatch(r"-{3,}", normalized)
+    )
+
+def _commit_current_field(fields: Dict[str, str], current_field: str | None, current_value: list[str]) -> None:
+    if current_field and current_value:
+        value = "\n".join(
+            cleaned
+            for part in current_value
+            if (cleaned := _clean_field_value(part))
+        ).strip()
+        if value:
+            fields[current_field] = value
+
 def parse_markdown_to_fields(md_content: str) -> Dict[str, str]:
     """
     从 Markdown 内容中提取表单字段
@@ -219,16 +245,19 @@ def parse_markdown_to_fields(md_content: str) -> Dict[str, str]:
 
         table_fields = _parse_markdown_table_row(line)
         if table_fields:
-            if current_field and current_value:
-                fields[current_field] = '\n'.join(current_value).strip()
-                current_field = None
-                current_value = []
+            _commit_current_field(fields, current_field, current_value)
+            current_field = None
+            current_value = []
             fields.update(table_fields)
             continue
         
         if not line:
-            if current_field and current_value:
-                fields[current_field] = '\n'.join(current_value).strip()
+            # Word 表单里常见“字段名单独一行，答案从下一段开始”的结构。
+            # 空行不能直接结束字段，否则会丢掉多段经历、用户画像这类长答案。
+            continue
+
+        if _is_section_heading(line):
+            _commit_current_field(fields, current_field, current_value)
             current_field = None
             current_value = []
             continue
@@ -238,8 +267,7 @@ def parse_markdown_to_fields(md_content: str) -> Dict[str, str]:
             pattern = rf'^\s*(?:[-*•●]?\s*)?(?:\(?\d+\)?[.、]?\s*)?(?:{re.escape(label)}[：:]|{re.escape(label)})\s*(.+)?$'
             match = re.match(pattern, normalized_line)
             if match:
-                if current_field and current_value:
-                    fields[current_field] = '\n'.join(current_value).strip()
+                _commit_current_field(fields, current_field, current_value)
                 
                 current_field = key
                 current_value = []
@@ -254,8 +282,7 @@ def parse_markdown_to_fields(md_content: str) -> Dict[str, str]:
         if not matched and current_field:
             current_value.append(line)
     
-    if current_field and current_value:
-        fields[current_field] = '\n'.join(current_value).strip()
+    _commit_current_field(fields, current_field, current_value)
     
     return fields
 

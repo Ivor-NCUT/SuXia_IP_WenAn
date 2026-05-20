@@ -1,0 +1,62 @@
+name: Deploy to InsForge
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      INSFORGE_ACCESS_TOKEN: ${{ secrets.INSFORGE_ACCESS_TOKEN }}
+      INSFORGE_PROJECT_ID: ${{ secrets.INSFORGE_PROJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install flyctl for InsForge compute source deploy
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Verify frontend build
+        run: npm run build
+
+      - name: Deploy backend compute service
+        id: backend
+        run: |
+          response="$(npx @insforge/cli compute deploy ./backend \
+            --name xiasu-api \
+            --port 8000 \
+            --cpu shared-1x \
+            --memory 512 \
+            --region sin \
+            --env "{\"DASHSCOPE_API_KEY\":\"${{ secrets.DASHSCOPE_API_KEY }}\",\"BAILIAN_MODEL\":\"${{ vars.BAILIAN_MODEL || 'kimi-k2.6' }}\"}" \
+            --json)"
+
+          echo "$response"
+          endpoint="$(echo "$response" | jq -r '.endpointUrl')"
+          if [ -z "$endpoint" ] || [ "$endpoint" = "null" ]; then
+            echo "InsForge compute deploy did not return endpointUrl"
+            exit 1
+          fi
+
+          echo "api_base_url=$endpoint" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy frontend
+        run: |
+          npx @insforge/cli deployments deploy . \
+            --env "{\"VITE_API_BASE_URL\":\"${{ steps.backend.outputs.api_base_url }}\"}" \
+            --meta "{\"commit\":\"${GITHUB_SHA}\",\"backend\":\"${{ steps.backend.outputs.api_base_url }}\"}" \
+            --json

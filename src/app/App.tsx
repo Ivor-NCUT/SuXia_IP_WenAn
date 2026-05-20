@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./styles.css";
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
+
 type IconProps = {
   size?: number;
   strokeWidth?: number;
@@ -284,7 +286,7 @@ export default function App() {
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
-      const response = await fetch("/api/upload/stream", {
+      const response = await fetch(`${API_BASE_URL}/api/upload/stream`, {
         method: "POST",
         body: formData,
       });

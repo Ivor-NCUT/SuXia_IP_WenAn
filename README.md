@@ -33,3 +33,23 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## GitHub 推送后自动部署
+
+仓库已配置 GitHub Actions：推送到 `main` 后会先部署 `backend/` 到 InsForge compute，再把返回的后端地址注入前端构建并部署到 InsForge frontend hosting。
+
+需要在 GitHub 仓库中配置这些 Secrets：
+
+```bash
+INSFORGE_ACCESS_TOKEN=InsForge CLI 访问令牌
+INSFORGE_PROJECT_ID=888fdeeb-8165-4701-894d-1d9e8959187a
+DASHSCOPE_API_KEY=阿里云百炼 API Key
+```
+
+可选配置：
+
+```bash
+BAILIAN_MODEL=kimi-k2.6
+```
+
+本地开发仍然使用 Vite 代理，前端请求 `/api` 会转发到 `http://127.0.0.1:8000`。线上部署时，`VITE_API_BASE_URL` 会由 GitHub Actions 自动设置为 InsForge compute 返回的后端地址。

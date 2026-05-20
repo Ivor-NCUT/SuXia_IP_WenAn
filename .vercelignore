@@ -1,4 +1,5 @@
 .agents/
+.github/
 .insforge/
 backend/
 docs/
