@@ -69,7 +69,7 @@ jobs:
             --json)"
 
           echo "$response"
-          endpoint="$(echo "$response" | jq -r '.endpointUrl')"
+          endpoint="$(printf '%s\n' "$response" | sed -n 's/.*"endpointUrl": "\([^"]*\)".*/\1/p' | tail -1)"
           if [ -z "$endpoint" ] || [ "$endpoint" = "null" ]; then
             echo "InsForge compute deploy did not return endpointUrl"
             exit 1
