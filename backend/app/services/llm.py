@@ -1,16 +1,16 @@
 from typing import AsyncIterator, Dict
 
-from openai import AsyncOpenAI
-
 from app.utils.config import config
 
 
-def get_bailian_client() -> AsyncOpenAI:
+def get_bailian_client():
     """
     创建阿里云百炼 OpenAI 兼容客户端。
     """
     if not config.DASHSCOPE_API_KEY:
         raise ValueError("请配置 DASHSCOPE_API_KEY 环境变量")
+
+    from openai import AsyncOpenAI
 
     return AsyncOpenAI(
         api_key=config.DASHSCOPE_API_KEY,
