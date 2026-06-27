@@ -36,23 +36,16 @@ npm run dev
 npm run build
 ```
 
-## GitHub 推送后自动部署
+## 部署
 
-仓库已配置 GitHub Actions：推送到 `main` 后会先部署 `backend/` 到 InsForge compute，再把返回的后端地址注入前端构建并部署到 InsForge frontend hosting。
+本项目不再使用 InsForge 部署。线上发布请走飞书妙搭。
 
-需要在 GitHub 仓库中配置这些 Secrets：
+妙搭运行环境需要配置：
 
 ```bash
-INSFORGE_ACCESS_TOKEN=InsForge CLI 访问令牌
-INSFORGE_PROJECT_ID=888fdeeb-8165-4701-894d-1d9e8959187a
 TOKENDANCE_API_KEY=词元跳动 API Key
-```
-
-可选配置：
-
-```bash
 TOKENDANCE_MODEL=kimi-k2.6
 TOKENDANCE_PROVIDER=infini-ai
 ```
 
-本地开发仍然使用 Vite 代理，前端请求 `/api` 会转发到 `http://127.0.0.1:8000`。线上部署时，`VITE_API_BASE_URL` 会由 GitHub Actions 自动设置为 InsForge compute 返回的后端地址。
+本地开发仍然使用 Vite 代理，前端请求 `/api` 会转发到 `http://127.0.0.1:8000`。
