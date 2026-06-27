@@ -3,28 +3,28 @@ from typing import AsyncIterator, Dict
 from app.utils.config import config
 
 
-def get_bailian_client():
+def get_llm_client():
     """
-    创建阿里云百炼 OpenAI 兼容客户端。
+    创建词元跳动 OpenAI 兼容客户端。
     """
-    if not config.DASHSCOPE_API_KEY:
-        raise ValueError("请配置 DASHSCOPE_API_KEY 环境变量")
+    if not config.TOKENDANCE_API_KEY:
+        raise ValueError("请配置 TOKENDANCE_API_KEY 环境变量")
 
     from openai import AsyncOpenAI
 
     return AsyncOpenAI(
-        api_key=config.DASHSCOPE_API_KEY,
-        base_url=config.BAILIAN_BASE_URL,
+        api_key=config.TOKENDANCE_API_KEY,
+        base_url=config.TOKENDANCE_BASE_URL,
     )
 
 
-async def stream_bailian(prompt: str) -> AsyncIterator[str]:
+async def stream_llm(prompt: str) -> AsyncIterator[str]:
     """
-    流式调用阿里云百炼 kimi-k2.6 生成文案。
+    流式调用词元跳动 kimi-k2.6 生成文案。
     """
-    client = get_bailian_client()
+    client = get_llm_client()
     stream = await client.chat.completions.create(
-        model=config.BAILIAN_MODEL,
+        model=config.TOKENDANCE_MODEL,
         messages=[
             {
                 "role": "user",
@@ -34,7 +34,13 @@ async def stream_bailian(prompt: str) -> AsyncIterator[str]:
         temperature=0.6,
         max_tokens=4000,
         stream=True,
-        extra_body={"enable_thinking": False},
+        extra_body={
+            "enable_thinking": False,
+            "provider": {
+                "only": [config.TOKENDANCE_PROVIDER],
+                "allow_fallbacks": False,
+            },
+        },
     )
 
     async for chunk in stream:
@@ -46,14 +52,18 @@ async def stream_bailian(prompt: str) -> AsyncIterator[str]:
             yield content
 
 
-async def call_bailian(prompt: str) -> str:
+async def call_llm(prompt: str) -> str:
     """
-    调用阿里云百炼 API 生成完整文案。
+    调用模型 API 生成完整文案。
     """
     chunks = []
-    async for chunk in stream_bailian(prompt):
+    async for chunk in stream_llm(prompt):
         chunks.append(chunk)
     return "".join(chunks)
+
+
+call_bailian = call_llm
+stream_bailian = stream_llm
 
 
 def parse_llm_response(response: str) -> Dict[str, str]:

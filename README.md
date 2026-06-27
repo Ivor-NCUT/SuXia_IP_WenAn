@@ -16,7 +16,9 @@ python3 -m venv ../.venv
 需要在 `.env` 中配置：
 
 ```bash
-DASHSCOPE_API_KEY=你的百炼 API Key
+TOKENDANCE_API_KEY=你的词元跳动 API Key
+TOKENDANCE_MODEL=kimi-k2.6
+TOKENDANCE_PROVIDER=infini-ai
 ```
 
 ## 前端运行
@@ -43,13 +45,14 @@ npm run build
 ```bash
 INSFORGE_ACCESS_TOKEN=InsForge CLI 访问令牌
 INSFORGE_PROJECT_ID=888fdeeb-8165-4701-894d-1d9e8959187a
-DASHSCOPE_API_KEY=阿里云百炼 API Key
+TOKENDANCE_API_KEY=词元跳动 API Key
 ```
 
 可选配置：
 
 ```bash
-BAILIAN_MODEL=kimi-k2.6
+TOKENDANCE_MODEL=kimi-k2.6
+TOKENDANCE_PROVIDER=infini-ai
 ```
 
 本地开发仍然使用 Vite 代理，前端请求 `/api` 会转发到 `http://127.0.0.1:8000`。线上部署时，`VITE_API_BASE_URL` 会由 GitHub Actions 自动设置为 InsForge compute 返回的后端地址。

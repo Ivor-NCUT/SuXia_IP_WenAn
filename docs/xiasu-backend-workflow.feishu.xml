@@ -72,16 +72,16 @@
   <rect x="360" y="352" width="282" height="150" rx="18" fill="#E8F7F7" stroke="#138184" stroke-width="2"/>
   <circle cx="397" cy="395" r="19" fill="#138184"/>
   <text x="391" y="402" font-size="20" font-weight="700" fill="#FFFFFF">6</text>
-  <text x="430" y="388" font-size="22" font-weight="700" fill="#075B5E">调用百炼 API</text>
-  <text x="430" y="419" font-size="15" fill="#247B7E">call_bailian</text>
+  <text x="430" y="388" font-size="22" font-weight="700" fill="#075B5E">调用词元跳动</text>
+  <text x="430" y="419" font-size="15" fill="#247B7E">call_llm</text>
   <text x="388" y="455" font-size="16" fill="#075B5E">读取环境变量</text>
   <text x="388" y="478" font-size="16" fill="#075B5E">签名后 POST /api/text/generation</text>
 
   <rect x="84" y="352" width="196" height="150" rx="18" fill="#EFF1F3" stroke="#4C5563" stroke-width="2"/>
   <text x="116" y="392" font-size="21" font-weight="700" fill="#313943">配置层</text>
   <text x="116" y="423" font-size="15" fill="#56606D">backend/app/utils/config.py</text>
-  <text x="116" y="459" font-size="16" fill="#313943">BAILIAN_API_KEY</text>
-  <text x="116" y="482" font-size="16" fill="#313943">BAILIAN_API_SECRET</text>
+  <text x="116" y="459" font-size="16" fill="#313943">TOKENDANCE_API_KEY</text>
+  <text x="116" y="482" font-size="16" fill="#313943">TOKENDANCE_PROVIDER</text>
 
   <path d="M280 427 H360" stroke="#4C5563" stroke-width="2" fill="none" stroke-dasharray="8 8"/>
   <polygon points="360,427 346,419 346,435" fill="#4C5563"/>
@@ -119,12 +119,12 @@
   <text x="1122" y="770" font-size="16" fill="#183B2C">persona: 人设文案</text>
   <text x="1122" y="797" font-size="16" fill="#183B2C">business: 业务文案</text>
 
-  <text x="86" y="884" font-size="15" fill="#737B84">主文件：backend/main.py 注册应用与路由；upload.py 编排流程；document.py 负责 Word 解析、字段抽取和 prompt；llm.py 负责签名、请求百炼和结果切分；config.py 读取环境变量。</text>
+  <text x="86" y="884" font-size="15" fill="#737B84">主文件：backend/main.py 注册应用与路由；upload.py 编排流程；document.py 负责 Word 解析、字段抽取和 prompt；llm.py 负责请求词元跳动和结果切分；config.py 读取环境变量。</text>
 </svg>
 </whiteboard>
 
 <h1>一、这套后端在做什么</h1>
-<p>这个项目的后端不是复杂的多服务系统，而是一条很清晰的单链路：接收用户上传的 Word 自审表，把 Word 转成 Markdown，再从 Markdown 里抽取客户信息，组装成给大模型的 prompt，调用阿里云百炼，最后把模型返回切成「人设文案」和「业务文案」两段返回给前端。</p>
+<p>这个项目的后端不是复杂的多服务系统，而是一条很清晰的单链路：接收用户上传的 Word 自审表，把 Word 转成 Markdown，再从 Markdown 里抽取客户信息，组装成给大模型的 prompt，调用词元跳动 OpenAI 兼容网关，最后把模型返回切成「人设文案」和「业务文案」两段返回给前端。</p>
 
 <h1>二、关键文件职责</h1>
 <table>
@@ -135,8 +135,8 @@
     <tr><td>backend/main.py</td><td>后端入口</td><td>创建 FastAPI 应用，打开 CORS，挂载 upload router，并提供 / 与 /health 两个基础接口。</td></tr>
     <tr><td>backend/app/routers/upload.py</td><td>流程编排层</td><td>接收 /api/upload 请求，校验文件后缀，创建临时文件，按顺序调用文档解析、大模型调用和响应解析。</td></tr>
     <tr><td>backend/app/services/document.py</td><td>文档理解层</td><td>把 DOCX 转成 Markdown；从表格或段落中抽取字段；把字段和原文组装成大模型 prompt。</td></tr>
-    <tr><td>backend/app/services/llm.py</td><td>大模型调用层</td><td>读取百炼配置，生成签名，发起 HTTP 请求，并把模型原始输出切分成 persona / business。</td></tr>
-    <tr><td>backend/app/utils/config.py</td><td>配置层</td><td>从环境变量读取 BAILIAN_API_KEY、BAILIAN_API_SECRET、BAILIAN_ENDPOINT。</td></tr>
+    <tr><td>backend/app/services/llm.py</td><td>大模型调用层</td><td>读取词元跳动配置，发起 OpenAI 兼容请求，并把模型原始输出切分成 persona / business。</td></tr>
+    <tr><td>backend/app/utils/config.py</td><td>配置层</td><td>从环境变量读取 TOKENDANCE_API_KEY、TOKENDANCE_MODEL、TOKENDANCE_PROVIDER、TOKENDANCE_BASE_URL。</td></tr>
     <tr><td>src/app/App.tsx</td><td>前端调用方</td><td>上传文件，调用 fetch("/api/upload")，把返回的 persona / business 放进可编辑预览框。</td></tr>
   </tbody>
 </table>
@@ -151,7 +151,7 @@
   <li seq="auto">docx_to_markdown 将 Word 转成 Markdown。</li>
   <li seq="auto">parse_markdown_to_fields 从 Markdown 中抽取姓名、头衔、主打产品、目标客户等字段。</li>
   <li seq="auto">generate_prompt 把字段和原文组装成完整 prompt。</li>
-  <li seq="auto">call_bailian 使用环境变量中的 key / secret 签名，并请求百炼文本生成接口。</li>
+  <li seq="auto">call_llm 使用环境变量中的 API key 请求词元跳动 OpenAI 兼容接口。</li>
   <li seq="auto">parse_llm_response 按固定标题切分模型返回。</li>
   <li seq="auto">后端返回 { status, data: { persona, business }, message }。</li>
   <li seq="auto">前端把两段文案展示到页面里，支持复制、导出和手动编辑。</li>

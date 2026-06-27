@@ -6,7 +6,7 @@ from typing import Dict
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from app.services.document import docx_to_markdown, parse_markdown_to_fields, generate_prompt
-from app.services.llm import call_bailian, parse_llm_response, stream_bailian
+from app.services.llm import call_llm, parse_llm_response, stream_llm
 
 router = APIRouter()
 
@@ -31,7 +31,7 @@ async def process_document(file: UploadFile) -> Dict[str, str]:
         md_content = docx_to_markdown(temp_path)
         fields = parse_markdown_to_fields(md_content)
         prompt = generate_prompt(fields, md_content)
-        llm_response = await call_bailian(prompt)
+        llm_response = await call_llm(prompt)
         result = parse_llm_response(llm_response)
         
         return result
@@ -59,7 +59,7 @@ async def stream_document(file: UploadFile) -> AsyncIterator[dict]:
 
         yield {"type": "status", "message": "正在生成文案..."}
         full_response = []
-        async for chunk in stream_bailian(prompt):
+        async for chunk in stream_llm(prompt):
             full_response.append(chunk)
             yield {"type": "delta", "content": chunk}
 
