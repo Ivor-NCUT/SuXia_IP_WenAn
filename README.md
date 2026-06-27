@@ -40,6 +40,11 @@ npm run build
 
 本项目不再使用 InsForge 部署。线上发布请走飞书妙搭。
 
+当前妙搭应用：
+
+- App ID：`app_17900rf48z6`
+- 线上地址：https://twoj0037lkv.aiforce.cloud/app/app_17900rf48z6
+
 妙搭运行环境需要配置：
 
 ```bash
